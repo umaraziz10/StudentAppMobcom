@@ -98,7 +98,7 @@ fun BerandaScreen() {
                     .padding(top = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ){
-                    Text("7 dari 10 tugas sudah selesai",
+                    Text("7 dari 10 tugas selesai",
                         fontWeight = FontWeight.Normal,
                         fontSize = 14.sp
                     )
