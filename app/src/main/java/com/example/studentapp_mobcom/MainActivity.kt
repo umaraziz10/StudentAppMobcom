@@ -30,6 +30,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.compose.ui.Alignment
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.draw.rotate
 import com.example.studentapp_mobcom.ui.theme.StudentAppMobcomTheme
 
 // Definisikan screen-screen Anda
@@ -61,11 +64,27 @@ fun MainScreen() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    var isFabRotated by remember { mutableStateOf(false) }
+    val rotation by animateFloatAsState(
+        targetValue = if (isFabRotated) 45f else 0f,
+        label = "fabRotation"
+    )
 
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate(Screen.TambahTugas.route) },
+                onClick = {
+                    if (currentDestination?.route == Screen.TambahTugas.route) {
+                        navController.navigate(Screen.Beranda.route) {
+                            popUpTo(navController.graph.findStartDestination().id)
+                            launchSingleTop = true
+                        }
+                        isFabRotated = false
+                    } else {
+                        navController.navigate(Screen.TambahTugas.route)
+                        isFabRotated = true
+                    }
+                },
                 shape = RoundedCornerShape(200.dp),
                 containerColor = Color(0xFF3F51B5),
                 modifier = Modifier
@@ -76,7 +95,9 @@ fun MainScreen() {
                     Icons.Default.Add,
                     contentDescription = "Tambah Tugas",
                     tint = Color.White,
-                    modifier = Modifier.size(52.dp)
+                    modifier = Modifier
+                        .size(52.dp)
+                        .rotate(rotation)
                 )
             }
         },
